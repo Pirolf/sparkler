@@ -1,0 +1,31 @@
+---
+version: "3"
+
+services:
+  master:
+    image: meow-spark
+    command: start-spark master
+    hostname: master
+    extra_hosts:
+      - "master_node:127.0.0.1"
+    # network_mode: "host"
+    # privileged: true
+    ports:
+      - "6066:6066"
+      - "6067:6067"
+      - "7070:7070"
+      - "8080:8080"
+      - "50070:50070"
+  worker:
+    image: meow-spark
+    command: start-spark worker master_node
+    # network_mode: "host"
+    environment:
+      - SPARK_WORKER_CORES=1
+      - SPARK_WORKER_MEMORY=2g
+    links:
+      - master
+
+# networks:
+#   spark-net:
+#     driver: host
